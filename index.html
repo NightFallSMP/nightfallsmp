@@ -271,14 +271,8 @@
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: scale(1.05);
             box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
-        }
-
-        .feature-description {
-            color: #c7d2fe;
-            line-height: 1.6;
-            margin-top: 1rem;
         }
 
         .feature-icon {
@@ -293,6 +287,114 @@
 
         .feature-card p {
             color: #c7d2fe;
+            margin-bottom: 1rem;
+        }
+
+        .explain-btn {
+            padding: 0.6rem 1.5rem;
+            background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .explain-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1f3a 0%, #0a0e27 100%);
+            border: 2px solid #6366f1;
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.5);
+            animation: slideUp 0.3s;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-icon {
+            font-size: 2.5rem;
+        }
+
+        .modal-title {
+            color: #818cf8;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .modal-text {
+            color: #c7d2fe;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(129, 140, 248, 0.2);
+            border: none;
+            color: #818cf8;
+            font-size: 1.5rem;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(129, 140, 248, 0.4);
+            transform: rotate(90deg);
         }
 
         @media (max-width: 768px) {
@@ -307,6 +409,10 @@
             .nav-content {
                 flex-direction: column;
                 gap: 1rem;
+            }
+
+            .modal-content {
+                padding: 2rem;
             }
         }
     </style>
@@ -489,49 +595,37 @@
                     <div class="feature-icon">❤️</div>
                     <h3>Lifesteal Mechanics</h3>
                     <p>Steal hearts from enemies in combat</p>
-                    <div class="feature-description">
-                        Every time you kill another player, you steal one of their hearts and add it to your own health bar. But be careful - if you die, you'll lose hearts too! Start with 10 hearts and work your way up to 20, or risk dropping down to just 1 heart. Manage your hearts wisely and become the strongest player on the server!
-                    </div>
+                    <button class="explain-btn" onclick="openModal('lifesteal')">Click for explanation</button>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">💰</div>
                     <h3>Economy System</h3>
                     <p>Trade, earn, and build your fortune</p>
-                    <div class="feature-description">
-                        Our economy system lets you earn money through various activities. The main money-making method is building bamboo farms - automate your income and watch your wealth grow! Use your earnings to buy powerful gear, withdraw hearts, or invest in your base. Trade with other players and dominate the server's economy!
-                    </div>
+                    <button class="explain-btn" onclick="openModal('economy')">Click for explanation</button>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">⚔️</div>
                     <h3>Intense PvP</h3>
                     <p>Fair combat rules for epic battles</p>
-                    <div class="feature-description">
-                        Engage in thrilling PvP battles with balanced combat rules. Fight in designated arenas or the open world, but follow the rules - no combat logging, no bed camping, and no unfair advantages. Test your skills against other players in a competitive environment where strategy and skill matter most!
-                    </div>
+                    <button class="explain-btn" onclick="openModal('pvp')">Click for explanation</button>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🛡️</div>
                     <h3>Active Staff</h3>
                     <p>Dedicated team keeping the server safe</p>
-                    <div class="feature-description">
-                        Our staff team is committed to maintaining a fair and enjoyable experience for everyone. They're available to help with issues, enforce rules, and ensure the server runs smoothly. Report rule breakers and trust that action will be taken swiftly. We have zero tolerance for cheating, harassment, or unfair play!
-                    </div>
+                    <button class="explain-btn" onclick="openModal('staff')">Click for explanation</button>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">👥</div>
                     <h3>Community</h3>
                     <p>Join our friendly Discord community</p>
-                    <div class="feature-description">
-                        Connect with fellow players in our active Discord server! Share strategies, form alliances, showcase your builds, and participate in community events. Stay updated with server announcements, report issues, and be part of a growing community. Make friends, find teammates, and join the NightFall family!
-                    </div>
+                    <button class="explain-btn" onclick="openModal('community')">Click for explanation</button>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🚫</div>
                     <h3>No Cheating</h3>
                     <p>Strict anti-cheat policies enforced</p>
-                    <div class="feature-description">
-                        We maintain a completely fair playing field with strict anti-cheat measures. X-ray, hacked clients, duplication glitches, and any form of cheating will result in immediate action. Our comprehensive rules cover everything from combat exploits to unfair advantages. Play fair or don't play at all!
-                    </div>
+                    <button class="explain-btn" onclick="openModal('anticheat')">Click for explanation</button>
                 </div>
             </div>
         </section>
@@ -563,7 +657,52 @@
         </section>
     </div>
 
+    <!-- Modal -->
+    <div id="modal" class="modal" onclick="closeModalOnOutside(event)">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            <div class="modal-header">
+                <div class="modal-icon" id="modalIcon"></div>
+                <h2 class="modal-title" id="modalTitle"></h2>
+            </div>
+            <p class="modal-text" id="modalText"></p>
+        </div>
+    </div>
+
     <script>
+        const featureData = {
+            lifesteal: {
+                icon: '❤️',
+                title: 'Lifesteal Mechanics',
+                text: 'Every time you kill another player, you steal one of their hearts and add it to your own health bar. But be careful - if you die, you\'ll lose hearts too! Start with 10 hearts and work your way up to 20, or risk dropping down to just 1 heart. Manage your hearts wisely and become the strongest player on the server!'
+            },
+            economy: {
+                icon: '💰',
+                title: 'Economy System',
+                text: 'Our economy system lets you earn money through various activities. The main money-making method is building bamboo farms - automate your income and watch your wealth grow! Use your earnings to buy powerful gear, withdraw hearts, or invest in your base. Trade with other players and dominate the server\'s economy!'
+            },
+            pvp: {
+                icon: '⚔️',
+                title: 'Intense PvP',
+                text: 'Engage in thrilling PvP battles with balanced combat rules. Fight in designated arenas or the open world, but follow the rules - no combat logging, no bed camping, and no unfair advantages. Test your skills against other players in a competitive environment where strategy and skill matter most!'
+            },
+            staff: {
+                icon: '🛡️',
+                title: 'Active Staff',
+                text: 'Our staff team is committed to maintaining a fair and enjoyable experience for everyone. They\'re available to help with issues, enforce rules, and ensure the server runs smoothly. Report rule breakers and trust that action will be taken swiftly. We have zero tolerance for cheating, harassment, or unfair play!'
+            },
+            community: {
+                icon: '👥',
+                title: 'Community',
+                text: 'Connect with fellow players in our active Discord server! Share strategies, form alliances, showcase your builds, and participate in community events. Stay updated with server announcements, report issues, and be part of a growing community. Make friends, find teammates, and join the NightFall family!'
+            },
+            anticheat: {
+                icon: '🚫',
+                title: 'No Cheating',
+                text: 'We maintain a completely fair playing field with strict anti-cheat measures. X-ray, hacked clients, duplication glitches, and any form of cheating will result in immediate action. Our comprehensive rules cover everything from combat exploits to unfair advantages. Play fair or don\'t play at all!'
+            }
+        };
+
         function createStars() {
             const starsContainer = document.getElementById('stars');
             for (let i = 0; i < 100; i++) {
@@ -595,6 +734,31 @@
                 event.target.classList.add('active');
             }
         }
+
+        function openModal(featureId) {
+            const feature = featureData[featureId];
+            document.getElementById('modalIcon').textContent = feature.icon;
+            document.getElementById('modalTitle').textContent = feature.title;
+            document.getElementById('modalText').textContent = feature.text;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function closeModalOnOutside(event) {
+            if (event.target.id === 'modal') {
+                closeModal();
+            }
+        }
+
+        // Close modal on ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
 
         createStars();
     </script>
