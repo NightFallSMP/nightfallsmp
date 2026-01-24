@@ -268,24 +268,16 @@
             padding: 2rem;
             text-align: center;
             transition: all 0.3s;
-            cursor: pointer;
         }
 
         .feature-card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
             box-shadow: 0 10px 40px rgba(99, 102, 241, 0.4);
         }
 
         .feature-description {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out, margin-top 0.4s ease-out;
             color: #c7d2fe;
             line-height: 1.6;
-        }
-
-        .feature-description.expanded {
-            max-height: 500px;
             margin-top: 1rem;
         }
 
@@ -493,7 +485,7 @@
             </div>
 
             <div class="features">
-                <div class="feature-card" onclick="toggleFeature(this)">
+                <div class="feature-card">
                     <div class="feature-icon">❤️</div>
                     <h3>Lifesteal Mechanics</h3>
                     <p>Steal hearts from enemies in combat</p>
@@ -501,7 +493,7 @@
                         Every time you kill another player, you steal one of their hearts and add it to your own health bar. But be careful - if you die, you'll lose hearts too! Start with 10 hearts and work your way up to 20, or risk dropping down to just 1 heart. Manage your hearts wisely and become the strongest player on the server!
                     </div>
                 </div>
-                <div class="feature-card" onclick="toggleFeature(this)">
+                <div class="feature-card">
                     <div class="feature-icon">💰</div>
                     <h3>Economy System</h3>
                     <p>Trade, earn, and build your fortune</p>
@@ -509,7 +501,7 @@
                         Our economy system lets you earn money through various activities. The main money-making method is building bamboo farms - automate your income and watch your wealth grow! Use your earnings to buy powerful gear, withdraw hearts, or invest in your base. Trade with other players and dominate the server's economy!
                     </div>
                 </div>
-                <div class="feature-card" onclick="toggleFeature(this)">
+                <div class="feature-card">
                     <div class="feature-icon">⚔️</div>
                     <h3>Intense PvP</h3>
                     <p>Fair combat rules for epic battles</p>
@@ -517,7 +509,7 @@
                         Engage in thrilling PvP battles with balanced combat rules. Fight in designated arenas or the open world, but follow the rules - no combat logging, no bed camping, and no unfair advantages. Test your skills against other players in a competitive environment where strategy and skill matter most!
                     </div>
                 </div>
-                <div class="feature-card" onclick="toggleFeature(this)">
+                <div class="feature-card">
                     <div class="feature-icon">🛡️</div>
                     <h3>Active Staff</h3>
                     <p>Dedicated team keeping the server safe</p>
@@ -525,7 +517,7 @@
                         Our staff team is committed to maintaining a fair and enjoyable experience for everyone. They're available to help with issues, enforce rules, and ensure the server runs smoothly. Report rule breakers and trust that action will be taken swiftly. We have zero tolerance for cheating, harassment, or unfair play!
                     </div>
                 </div>
-                <div class="feature-card" onclick="toggleFeature(this)">
+                <div class="feature-card">
                     <div class="feature-icon">👥</div>
                     <h3>Community</h3>
                     <p>Join our friendly Discord community</p>
@@ -533,7 +525,7 @@
                         Connect with fellow players in our active Discord server! Share strategies, form alliances, showcase your builds, and participate in community events. Stay updated with server announcements, report issues, and be part of a growing community. Make friends, find teammates, and join the NightFall family!
                     </div>
                 </div>
-                <div class="feature-card" onclick="toggleFeature(this)">
+                <div class="feature-card">
                     <div class="feature-icon">🚫</div>
                     <h3>No Cheating</h3>
                     <p>Strict anti-cheat policies enforced</p>
@@ -602,21 +594,6 @@
             if (event) {
                 event.target.classList.add('active');
             }
-        }
-
-        function toggleFeature(card) {
-            const description = card.querySelector('.feature-description');
-            const allDescriptions = document.querySelectorAll('.feature-description');
-            
-            // Close all other descriptions
-            allDescriptions.forEach(desc => {
-                if (desc !== description) {
-                    desc.classList.remove('expanded');
-                }
-            });
-            
-            // Toggle current description
-            description.classList.toggle('expanded');
         }
 
         createStars();
