@@ -241,6 +241,7 @@
             margin-bottom: 1rem;
             border-radius: 8px;
             transition: all 0.3s;
+            cursor: pointer;
         }
 
         .rule-item:hover {
@@ -252,6 +253,36 @@
             color: #818cf8;
             font-weight: 700;
             margin-right: 0.5rem;
+        }
+
+        .rule-text {
+            display: inline;
+        }
+
+        .rule-explanation {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, margin-top 0.4s ease-out;
+            color: #a5b4fc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .rule-explanation.expanded {
+            max-height: 300px;
+            margin-top: 0.75rem;
+        }
+
+        .expand-icon {
+            float: right;
+            color: #818cf8;
+            font-size: 0.9rem;
+            transition: transform 0.3s;
+        }
+
+        .rule-item:hover .expand-icon {
+            transform: translateX(3px);
         }
 
         .features {
@@ -460,126 +491,165 @@
             <div class="rules-container">
                 <div class="rules-section">
                     <h2>📜 Server Rules</h2>
-                    <div class="rule-item">
-                        <span class="rule-number">1.</span>No cheats of any kind (texture packs, mods, clients, etc.).
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">1.</span><span class="rule-text">No cheats of any kind (texture packs, mods, clients, etc.).</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">This includes hacked clients, X-ray texture packs, or any modifications that give unfair advantages in combat or resource gathering.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">2.</span>No overpowered or illegal items (overpowered = Elytra + mace).
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">2.</span><span class="rule-text">No overpowered or illegal items (overpowered = Elytra + mace).</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Combining Elytra flight with the mace creates an unfair combat advantage. Other illegal item combinations will be announced by staff.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">3.</span>No exploiting glitches.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">3.</span><span class="rule-text">No exploiting glitches.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Report any bugs or glitches to staff immediately. Using them for personal advantage will result in punishment.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">4.</span>Follow staff orders.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">4.</span><span class="rule-text">Follow staff orders.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">When staff asks you to do or stop doing something, comply immediately. Disrespecting or ignoring staff instructions is not tolerated.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">5.</span>No lag machines.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">5.</span><span class="rule-text">No lag machines.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Building contraptions designed to lag the server ruins the experience for everyone and will result in an immediate ban.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">6.</span>No cross-trading or real-world trading.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">6.</span><span class="rule-text">No cross-trading or real-world trading.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't trade in-game items or currency for real money, items from other servers, or external services. Keep all trades within the server economy.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">7.</span>No alt abuse.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">7.</span><span class="rule-text">No alt abuse.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Using alternate accounts to gain unfair advantages, bypass bans, or store extra items is prohibited. One player, one account.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">8.</span>No X-ray or ore-finding of any kind (mods, packs, clients, etc.).
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">8.</span><span class="rule-text">No X-ray or ore-finding of any kind (mods, packs, clients, etc.).</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Any method to see ores through blocks or locate them unfairly is strictly forbidden. Mine legitimately or face consequences.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">9.</span>No using Elytra before or during combat.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">9.</span><span class="rule-text">No using Elytra before or during combat.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Elytra gives an unfair mobility advantage in PvP. Remove it before engaging in or being engaged in combat.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">10.</span>No debuffs in combat (unless used to counter Mace).
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">10.</span><span class="rule-text">No debuffs in combat (unless used to counter Mace).</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Weakness, slowness, and other debuff potions are banned in PvP except when defending against mace attacks to keep combat fair.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">11.</span>No ruining spawn of any kind.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">11.</span><span class="rule-text">No ruining spawn of any kind.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Spawn is a shared space for all players. Don't grief, lava cast, or destroy the spawn area in any way.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">12.</span>No threatening to ruin the spawn/server.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">12.</span><span class="rule-text">No threatening to ruin the spawn/server.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Even joking about destroying spawn or crashing the server will be taken seriously and may result in punishment.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">13.</span>No using bots, AI, or macros to farm.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">13.</span><span class="rule-text">No using bots, AI, or macros to farm.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">AFK farming with automated systems is unfair. All farming must be done actively by a real player at their keyboard.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">14.</span>No using the server for personal gain.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">14.</span><span class="rule-text">No using the server for personal gain.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't promote your social media, advertise services, or use the server as a platform for personal profit outside of normal gameplay.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">15.</span>No stashing illegal items (hiding them from staff/members).
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">15.</span><span class="rule-text">No stashing illegal items (hiding them from staff/members).</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">If you have banned items, don't hide them. Turn them in to staff immediately. Concealing illegal items makes you complicit.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">16.</span>No pushing players outside of arena.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">16.</span><span class="rule-text">No pushing players outside of arena.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Fights should happen where they're supposed to. Don't use knockback or pistons to force players out of designated PvP areas.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">17.</span>No encouraging players to break a rule.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">17.</span><span class="rule-text">No encouraging players to break a rule.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Telling others to cheat, exploit, or break rules makes you just as guilty. Don't be a bad influence.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">18.</span>Report players when caught breaking rules.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">18.</span><span class="rule-text">Report players when caught breaking rules.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">If you see someone cheating or breaking rules, report them to staff with evidence. Help keep the server fair for everyone.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">19.</span>No bed camping (camping a player's bed to farm them for hearts/kills).
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">19.</span><span class="rule-text">No bed camping (camping a player's bed to farm them for hearts/kills).</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Waiting at someone's spawn point to repeatedly kill them is toxic behavior and exploitative. Give players a fair chance.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">20.</span>No staff impersonation.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">20.</span><span class="rule-text">No staff impersonation.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't pretend to be staff, use similar names, or claim to have authority you don't have. This confuses players and undermines trust.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">21.</span>No ban evasion.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">21.</span><span class="rule-text">No ban evasion.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">If you're banned, don't use alts or VPNs to get back on. Accept your punishment and appeal properly if you believe it was unfair.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">22.</span>No naked killing.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">22.</span><span class="rule-text">No naked killing.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't kill players who clearly have no gear or items. It's pointless griefing that ruins the new player experience.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">23.</span>Use common sense.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">23.</span><span class="rule-text">Use common sense.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">If something feels wrong, manipulative, or unfair, it probably is. Think before you act and consider how your actions affect others.</div>
                     </div>
                 </div>
 
                 <div class="rules-section">
                     <h2>💬 Chat Rules</h2>
-                    <div class="rule-item">
-                        <span class="rule-number">1.</span>No spamming or flooding.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">1.</span><span class="rule-text">No spamming or flooding.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't send repetitive messages, excessive caps, or flood chat with nonsense. Give everyone a chance to communicate.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">2.</span>No mass pinging (members or staff).
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">2.</span><span class="rule-text">No mass pinging (members or staff).</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't ping everyone or multiple staff members unnecessarily. It's annoying and disruptive. Ping only when truly needed.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">3.</span>No advertising or promotion.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">3.</span><span class="rule-text">No advertising or promotion.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't promote other servers, Discord servers, websites, or social media without permission. This includes DM advertising.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">4.</span>No chat colors.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">4.</span><span class="rule-text">No chat colors.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Colored text in chat can be distracting and is reserved for staff announcements. Keep your messages in default white.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">5.</span>No NSFW content/context of any kind.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">5.</span><span class="rule-text">No NSFW content/context of any kind.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Keep all content family-friendly. No sexual, graphic, or inappropriate content in any form. This is a community for all ages.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">6.</span>No harassing others.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">6.</span><span class="rule-text">No harassing others.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Treat everyone with respect. Bullying, targeting, or repeatedly bothering someone will not be tolerated.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">7.</span>No racism, discrimination, or hate speech.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">7.</span><span class="rule-text">No racism, discrimination, or hate speech.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Zero tolerance for slurs, bigotry, or hateful comments about race, religion, gender, sexuality, or any other identity.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">8.</span>No threats or encouraging real-life harm.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">8.</span><span class="rule-text">No threats or encouraging real-life harm.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Never threaten violence, self-harm, or encourage others to hurt themselves or others. This results in immediate action.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">9.</span>No sharing personal information.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">9.</span><span class="rule-text">No sharing personal information.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't share your own or others' addresses, phone numbers, full names, or other sensitive info. Protect your privacy and others'.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">10.</span>No blackmail or impersonation of staff.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">10.</span><span class="rule-text">No blackmail or impersonation of staff.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't threaten to expose information or pretend to be staff members. Both are serious offenses that break trust.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">11.</span>No spreading rumors or false accusations that could hurt a staff member's reputation.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">11.</span><span class="rule-text">No spreading rumors or false accusations that could hurt a staff member's reputation.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Making up lies about staff or spreading unverified claims damages reputations. If you have concerns, report them properly.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">12.</span>No false reports.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">12.</span><span class="rule-text">No false reports.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't file fake reports to get others in trouble. False reporting wastes staff time and can get you punished instead.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">13.</span>No false tickets (opening tickets without solid reasons).
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">13.</span><span class="rule-text">No false tickets (opening tickets without solid reasons).</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Only create support tickets when you have a legitimate issue or question. Don't waste staff time with joke tickets.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">14.</span>No exploiting rule loopholes.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">14.</span><span class="rule-text">No exploiting rule loopholes.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">Don't try to find ways around the rules by technicalities. Follow the spirit of the rules, not just the letter.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">15.</span>Follow staff instructions.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">15.</span><span class="rule-text">Follow staff instructions.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">When staff tells you to stop or do something, listen and comply. Arguing or ignoring them will only make things worse.</div>
                     </div>
-                    <div class="rule-item">
-                        <span class="rule-number">16.</span>Use common sense.
+                    <div class="rule-item" onclick="toggleRule(this)">
+                        <span class="rule-number">16.</span><span class="rule-text">Use common sense.</span><span class="expand-icon">▸</span>
+                        <div class="rule-explanation">If you're wondering whether something is okay to say, it probably isn't. Think before you type and be respectful.</div>
                     </div>
                 </div>
             </div>
@@ -733,6 +803,19 @@
             navLinks.forEach(link => link.classList.remove('active'));
             if (event) {
                 event.target.classList.add('active');
+            }
+        }
+
+        function toggleRule(element) {
+            const explanation = element.querySelector('.rule-explanation');
+            const icon = element.querySelector('.expand-icon');
+            
+            if (explanation.classList.contains('expanded')) {
+                explanation.classList.remove('expanded');
+                icon.textContent = '▸';
+            } else {
+                explanation.classList.add('expanded');
+                icon.textContent = '▾';
             }
         }
 
