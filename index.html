@@ -1,1204 +1,700 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NightFallSMP - Lifesteal PvP Server</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Exo+2:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --night-dark: #0a0e1a;
-            --night-mid: #151b2e;
-            --night-light: #1f2942;
-            --glow-purple: #b84fff;
-            --glow-cyan: #4ffff5;
-            --glow-red: #ff4f7e;
-            --text-primary: #e8ecff;
-            --text-muted: #8b9bc9;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Exo 2', sans-serif;
-            background: var(--night-dark);
-            color: var(--text-primary);
-            overflow: hidden;
-            position: relative;
-            height: 100vh;
-        }
-
-        /* Layout */
-        .layout {
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Sidebar Navigation */
-        .sidebar {
-            width: 280px;
-            background: linear-gradient(180deg, var(--night-mid), var(--night-dark));
-            border-right: 2px solid var(--glow-purple);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 10;
-            box-shadow: 5px 0 30px rgba(184, 79, 255, 0.3);
-        }
-
-        .sidebar-logo {
-            padding: 40px 20px;
-            text-align: center;
-            border-bottom: 2px solid var(--night-light);
-        }
-
-        .sidebar-logo h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2rem;
-            background: linear-gradient(135deg, var(--glow-purple), var(--glow-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 5px;
-        }
-
-        .sidebar-logo p {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .nav-menu {
-            flex: 1;
-            padding: 30px 0;
-        }
-
-        .nav-item {
-            padding: 18px 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 1.05rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .nav-item:hover {
-            background: rgba(184, 79, 255, 0.1);
-            color: var(--glow-cyan);
-            border-left-color: var(--glow-cyan);
-        }
-
-        .nav-item.active {
-            background: rgba(184, 79, 255, 0.2);
-            color: var(--glow-purple);
-            border-left-color: var(--glow-purple);
-        }
-
-        .nav-icon {
-            font-size: 1.3rem;
-        }
-
-        /* Main Content Area */
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .content-section {
-            display: none;
-            padding: 60px;
-            max-width: 1200px;
-            margin: 0 auto;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Animated Star Background */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 3s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        .shooting-star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: linear-gradient(90deg, var(--glow-cyan), transparent);
-            border-radius: 50%;
-            animation: shoot 3s linear infinite;
-        }
-
-        @keyframes shoot {
-            0% {
-                transform: translateX(0) translateY(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(300px) translateY(300px);
-                opacity: 0;
-            }
-        }
-
-        /* Section Titles */
-        .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--glow-purple), var(--glow-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-subtitle {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            margin-bottom: 40px;
-            line-height: 1.6;
-        }
-
-        /* Server Info Card */
-        .server-info {
-            background: linear-gradient(135deg, var(--night-mid), var(--night-light));
-            border: 2px solid var(--glow-purple);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 40px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(184, 79, 255, 0.3);
-        }
-
-        .server-ip-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        .server-ip {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(1.5rem, 3vw, 2rem);
-            color: var(--glow-cyan);
-            margin-bottom: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .server-ip:hover {
-            color: var(--glow-purple);
-            text-shadow: 0 0 20px var(--glow-purple);
-        }
-
-        .discord-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #5865f2, #7289da);
-            color: white;
-            padding: 16px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
-        }
-
-        .discord-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(88, 101, 242, 0.6);
-            border-color: var(--glow-cyan);
-        }
-
-        /* How to Join Steps */
-        .steps-container {
-            display: grid;
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .step-card {
-            background: var(--night-mid);
-            border: 2px solid var(--night-light);
-            border-radius: 15px;
-            padding: 30px;
-            display: flex;
-            gap: 25px;
-            align-items: flex-start;
-            transition: all 0.3s ease;
-        }
-
-        .step-card:hover {
-            border-color: var(--glow-purple);
-            transform: translateX(10px);
-            box-shadow: 0 10px 30px rgba(184, 79, 255, 0.2);
-        }
-
-        .step-number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--glow-purple);
-            line-height: 1;
-            min-width: 60px;
-        }
-
-        .step-content h3 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--glow-cyan);
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .step-content p {
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        /* Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .feature-card {
-            background: var(--night-mid);
-            border: 2px solid var(--night-light);
-            border-radius: 15px;
-            padding: 35px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--glow-purple), transparent);
-            transform: translate(-50%, -50%);
-            transition: width 0.5s, height 0.5s;
-            opacity: 0.1;
-        }
-
-        .feature-card:hover::before {
-            width: 400px;
-            height: 400px;
-        }
-
-        .feature-card:hover {
-            border-color: var(--glow-purple);
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(184, 79, 255, 0.3);
-        }
-
-        .feature-icon {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 10px currentColor);
-        }
-
-        .feature-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.6rem;
-            margin-bottom: 15px;
-            color: var(--glow-cyan);
-        }
-
-        .feature-desc {
-            color: var(--text-muted);
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-
-        .feature-details {
-            color: var(--text-primary);
-            line-height: 1.8;
-            padding-top: 15px;
-            border-top: 1px solid var(--night-light);
-        }
-
-        .feature-details ul {
-            margin-left: 20px;
-            margin-top: 10px;
-        }
-
-        .feature-details li {
-            margin-bottom: 8px;
-            color: var(--text-muted);
-        }
-
-        /* Rules Sections */
-        .rules-grid {
-            display: grid;
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .rule-card {
-            background: var(--night-mid);
-            border: 2px solid var(--night-light);
-            border-radius: 15px;
-            padding: 25px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .rule-card:hover {
-            border-color: var(--glow-purple);
-            box-shadow: 0 10px 30px rgba(184, 79, 255, 0.2);
-        }
-
-        .rule-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .rule-title {
-            font-weight: 700;
-            color: var(--text-primary);
-            font-size: 1.1rem;
-            flex: 1;
-        }
-
-        .rule-expand {
-            color: var(--glow-purple);
-            font-size: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .rule-card.expanded .rule-expand {
-            transform: rotate(180deg);
-        }
-
-        .rule-explanation {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            color: var(--text-muted);
-            line-height: 1.8;
-            padding-top: 0;
-        }
-
-        .rule-card.expanded .rule-explanation {
-            max-height: 500px;
-            padding-top: 15px;
-            border-top: 1px solid var(--night-light);
-            margin-top: 15px;
-        }
-
-        /* Responsive */
-        @media (max-width: 968px) {
-            .sidebar {
-                width: 80px;
-            }
-
-            .sidebar-logo h1 {
-                font-size: 1.2rem;
-                writing-mode: vertical-rl;
-            }
-
-            .sidebar-logo p {
-                display: none;
-            }
-
-            .nav-item {
-                padding: 18px 10px;
-                justify-content: center;
-            }
-
-            .nav-text {
-                display: none;
-            }
-
-            .nav-icon {
-                font-size: 1.5rem;
-            }
-
-            .content-section {
-                padding: 40px 30px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .step-card {
-                flex-direction: column;
-            }
-
-            .step-number {
-                min-width: auto;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NightFall SMP</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070a0f;
+    --panel: #0c1118;
+    --sidebar: #090d14;
+    --accent: #4a9eff;
+    --accent2: #ff6b35;
+    --gold: #f0c040;
+    --text: #c8d8f0;
+    --muted: #5a7090;
+    --border: rgba(74,158,255,0.15);
+    --glow: rgba(74,158,255,0.3);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 35%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 95% 65%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 45%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 55% 70%, rgba(200,220,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 88% 88%, rgba(200,220,255,0.4) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 5% 45%, rgba(200,220,255,0.3) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    position: relative;
+    overflow: hidden;
+  }
+  .sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  .sidebar-logo {
+    padding: 20px 24px 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-img-wrap {
+    width: 112px;
+    height: 112px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  .logo-img-wrap img {
+    width: 117%;
+    height: 117%;
+    object-fit: cover;
+    object-position: center center;
+    margin: -8.5% 0 0 -8.5%;
+    display: block;
+  }
+  .sidebar-logo h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .sidebar-logo span.tag {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+  .nav {
+    padding: 20px 0;
+    flex: 1;
+    overflow-y: auto;
+  }
+  .nav::-webkit-scrollbar { width: 0; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 24px;
+    cursor: pointer;
+    color: var(--muted);
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: all 0.25s;
+    position: relative;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+  .nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.25s;
+    border-radius: 0 2px 2px 0;
+  }
+  .nav-item .icon { font-size: 1rem; min-width: 20px; text-align: center; }
+  .nav-item:hover { color: var(--text); background: rgba(74,158,255,0.05); }
+  .nav-item.active { color: var(--accent); background: rgba(74,158,255,0.08); }
+  .nav-item.active::before { opacity: 1; }
+  .sidebar-bottom {
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .ip-box {
+    background: rgba(74,158,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .ip-box:hover { border-color: var(--accent); background: rgba(74,158,255,0.12); }
+  .ip-box label { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 4px; cursor: pointer; }
+  .ip-box span.ip { font-family: 'Cinzel', serif; font-size: 0.72rem; color: var(--accent); }
+  .copy-hint { font-size: 0.58rem; color: var(--muted); margin-top: 2px; display: block; }
+  .discord-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    background: rgba(88,101,242,0.15);
+    border: 1px solid rgba(88,101,242,0.3);
+    border-radius: 8px;
+    color: #7289da;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .discord-btn:hover { background: rgba(88,101,242,0.25); border-color: #7289da; color: #fff; }
+
+  .main {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+  .page {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    padding: 50px 60px;
+    display: none;
+  }
+  .page::-webkit-scrollbar { width: 6px; }
+  .page::-webkit-scrollbar-track { background: transparent; }
+  .page::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .page.active {
+    display: block;
+    animation: fadeIn 0.4s forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .page-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+  .page-title span { color: var(--accent); }
+  .page-subtitle {
+    font-size: 1rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* HOME */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .hero-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+  .hero-card:hover { border-color: rgba(74,158,255,0.35); transform: translateY(-2px); }
+  .hero-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .hero-card:hover::after { opacity: 1; }
+  .hero-card.wide { grid-column: 1 / -1; }
+  .hero-card .card-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+  .hero-card h3 { font-family: 'Cinzel', serif; font-size: 1rem; color: #fff; margin-bottom: 8px; letter-spacing: 0.05em; }
+  .hero-card p { font-size: 0.95rem; color: var(--muted); line-height: 1.7; }
+  .big-welcome { font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--gold); margin-bottom: 12px; }
+  .stat-row { display: flex; gap: 16px; margin-top: 12px; }
+  .stat {
+    background: rgba(74,158,255,0.07);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 20px;
+    text-align: center;
+    flex: 1;
+  }
+  .stat .val { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--accent); font-weight: 900; }
+  .stat .lbl { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; }
+
+  /* RULES */
+  .rules-section { margin-bottom: 36px; }
+  .rules-section h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(240,192,64,0.2);
+  }
+  .rule-item {
+    display: flex;
+    gap: 16px;
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(74,158,255,0.06);
+    align-items: flex-start;
+    transition: background 0.2s;
+    border-radius: 6px;
+  }
+  .rule-item:hover { background: rgba(74,158,255,0.04); }
+  .rule-num { font-family: 'Cinzel', serif; font-size: 0.7rem; color: var(--accent); min-width: 28px; padding-top: 2px; opacity: 0.7; }
+  .rule-text { font-size: 0.95rem; color: var(--text); line-height: 1.5; }
+  .rule-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(255,107,53,0.15);
+    color: var(--accent2);
+    border: 1px solid rgba(255,107,53,0.25);
+    margin-left: 8px;
+    vertical-align: middle;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.1em;
+  }
+  .glow-line { height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); margin: 20px 0; opacity: 0.3; }
+
+  /* FEATURES */
+  .features-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .feature-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card:hover { border-color: rgba(74,158,255,0.35); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+  .feature-icon { font-size: 2.2rem; margin-bottom: 14px; display: block; }
+  .feature-card h3 { font-family: 'Cinzel', serif; font-size: 1.05rem; color: #fff; margin-bottom: 8px; }
+  .feature-card .short-desc { font-size: 0.92rem; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+  .more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .more-btn:hover { background: rgba(74,158,255,0.1); border-color: var(--accent); }
+  .arrow { transition: transform 0.25s; display: inline-block; }
+  .more-btn.open .arrow { transform: rotate(90deg); }
+  .expanded-desc {
+    display: none;
+    margin-top: 14px;
+    padding: 14px;
+    background: rgba(74,158,255,0.05);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .expanded-desc.open { display: block; animation: slideDown 0.25s ease; }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .cmd { background: rgba(74,158,255,0.1); padding: 1px 6px; border-radius: 4px; color: var(--accent); font-family: monospace; font-size: 0.9em; }
+
+  /* HOW TO JOIN */
+  .steps-container { max-width: 600px; }
+  .step-item { display: flex; gap: 20px; margin-bottom: 0; align-items: flex-start; animation: fadeSlide 0.4s ease backwards; }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .step-item:nth-child(1) { animation-delay: 0.05s; }
+  .step-item:nth-child(3) { animation-delay: 0.1s; }
+  .step-item:nth-child(5) { animation-delay: 0.15s; }
+  .step-item:nth-child(7) { animation-delay: 0.2s; }
+  .step-item:nth-child(9) { animation-delay: 0.25s; }
+  .step-num {
+    width: 44px; height: 44px; min-width: 44px;
+    background: rgba(74,158,255,0.1);
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif; font-size: 1rem; color: var(--accent); font-weight: 900;
+  }
+  .step-content { padding-top: 8px; padding-bottom: 20px; }
+  .step-content p { font-size: 1.05rem; color: var(--text); line-height: 1.6; }
+  .step-content code { background: rgba(74,158,255,0.1); border: 1px solid var(--border); border-radius: 4px; padding: 1px 7px; color: var(--accent); font-family: monospace; }
+  .connector { width: 1px; height: 28px; background: var(--border); margin: 0 0 0 22px; }
+  .join-note {
+    margin-top: 32px; padding: 20px 24px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    font-size: 0.95rem; color: var(--muted);
+  }
+  .join-note strong { color: var(--gold); font-family: 'Cinzel', serif; }
+
+  .copy-ip-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 10px;
+    padding: 4px 12px;
+    background: rgba(74,158,255,0.1);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--accent);
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    vertical-align: middle;
+  }
+  .copy-ip-btn:hover { background: rgba(74,158,255,0.2); border-color: var(--accent); }
+  .copy-ip-btn.copied { background: rgba(74,158,255,0.25); color: #7fffb0; border-color: #7fffb0; }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--accent); color: var(--bg);
+    padding: 10px 24px; border-radius: 8px;
+    font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 0.1em; font-weight: 600;
+    z-index: 999; transition: transform 0.3s;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
 </head>
 <body>
-    <!-- Starfield Background -->
-    <div class="stars" id="starfield"></div>
 
-    <div class="layout">
-        <!-- Sidebar Navigation -->
-        <div class="sidebar">
-            <div class="sidebar-logo">
-                <h1>NIGHTFALL</h1>
-                <p>SMP Server</p>
-            </div>
-            
-            <nav class="nav-menu">
-                <div class="nav-item active" onclick="showSection('home')">
-                    <span class="nav-icon">🏠</span>
-                    <span class="nav-text">Home</span>
-                </div>
-                <div class="nav-item" onclick="showSection('join')">
-                    <span class="nav-icon">🎮</span>
-                    <span class="nav-text">How to Join</span>
-                </div>
-                <div class="nav-item" onclick="showSection('features')">
-                    <span class="nav-icon">⭐</span>
-                    <span class="nav-text">Features</span>
-                </div>
-                <div class="nav-item" onclick="showSection('minecraft-rules')">
-                    <span class="nav-icon">📜</span>
-                    <span class="nav-text">Minecraft Rules</span>
-                </div>
-                <div class="nav-item" onclick="showSection('chat-rules')">
-                    <span class="nav-icon">💬</span>
-                    <span class="nav-text">Chat Rules</span>
-                </div>
-            </nav>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-img-wrap">
+      <img src="data:image/png;base64,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" alt="NightFall SMP" />
+    </div>
+    <h1>NightFall</h1>
+    <span class="tag">SMP</span>
+  </div>
+  <nav class="nav">
+    <button class="nav-item active" onclick="showPage('home',this)">
+      <span class="icon">🏠</span> Home
+    </button>
+    <button class="nav-item" onclick="showPage('features',this)">
+      <span class="icon">⚔️</span> Features
+    </button>
+    <button class="nav-item" onclick="showPage('rules',this)">
+      <span class="icon">📜</span> Rules
+    </button>
+    <button class="nav-item" onclick="showPage('join',this)">
+      <span class="icon">🚀</span> How To Join
+    </button>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="ip-box" onclick="copyIP()">
+      <label>Server IP</label>
+      <span class="ip">nightfallsmp.2bd.net</span>
+      <span class="copy-hint">Click to copy</span>
+    </div>
+    <a class="discord-btn" href="https://discord.gg/sE9gb4vb6S" target="_blank">
+      💬 Join Discord
+    </a>
+  </div>
+</aside>
+
+<main class="main">
+
+  <!-- HOME -->
+  <div id="page-home" class="page active">
+    <div class="page-title">Welcome to <span>NightFall</span> SMP</div>
+    <div class="page-subtitle">A competitive Lifesteal survival server — where every heart matters.</div>
+    <div class="hero-grid">
+      <div class="hero-card wide">
+        <div class="big-welcome">⚔️ Rise or Fall — the choice is yours.</div>
+        <p>NightFall SMP is a fully free-to-play, economy-driven Lifesteal server built for competitive PvP players. Every battle has stakes. Every heart is precious. Can you survive?</p>
+        <div class="stat-row">
+          <div class="stat"><div class="val">❤️ 20</div><div class="lbl">Max Hearts</div></div>
+          <div class="stat"><div class="val">🗡 PvP</div><div class="lbl">Main Mode</div></div>
+          <div class="stat"><div class="val">🆓 F2P</div><div class="lbl">No Pay to Win</div></div>
         </div>
+      </div>
+      <div class="hero-card">
+        <span class="card-icon">🌍</span>
+        <h3>Server IP</h3>
+        <p>Join us at <strong style="color:var(--accent)">nightfallsmp.2bd.net</strong><br>Java Edition</p>
+      </div>
+      <div class="hero-card">
+        <span class="card-icon">💬</span>
+        <h3>Community</h3>
+        <p>Join our Discord for news, updates, reports, and community events. Active staff always available.</p>
+      </div>
+    </div>
+  </div>
 
-        <!-- Main Content Area -->
-        <div class="main-content">
-            <!-- HOME SECTION -->
-            <div id="home" class="content-section active">
-                <h1 class="section-title">Welcome to NightFallSMP</h1>
-                <p class="section-subtitle">Experience the ultimate Lifesteal PvP adventure with a balanced economy and active community!</p>
-                
-                <div class="server-info">
-                    <div class="server-ip-label">Server IP Address</div>
-                    <div class="server-ip" onclick="copyIP()">NightFallSMP.valk.rocks</div>
-                    <center><a href="https://discord.gg/yUzRtwt2sV" target="_blank" class="discord-btn">Join Our Discord</a></center>
-                </div>
+  <!-- FEATURES -->
+  <div id="page-features" class="page">
+    <div class="page-title"><span>Features</span></div>
+    <div class="page-subtitle">What makes NightFall SMP stand out from the rest.</div>
+    <div class="features-grid">
 
-                <h2 style="font-family: 'Orbitron', sans-serif; color: var(--glow-cyan); font-size: 2rem; margin-bottom: 30px;">Why Choose NightFallSMP?</h2>
-                
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">💀</div>
-                        <h3 class="feature-title">Lifesteal Mechanics</h3>
-                        <p class="feature-desc">Gain hearts when you defeat opponents and lose them when you fall in battle!</p>
-                    </div>
+      <div class="feature-card">
+        <span class="feature-icon">❤️</span>
+        <h3>Lifesteal</h3>
+        <p class="short-desc">Kill players, steal their hearts. Lose all your hearts and face the ban.</p>
+        <button class="more-btn" onclick="toggleExpand(this)">More Info <span class="arrow">›</span></button>
+        <div class="expanded-desc">When you kill a player, you steal one heart and increase your own health — up to a maximum of 20 hearts. The player you killed permanently loses one heart. If a player reaches 0 hearts, they are banned from the server. Players can also craft or trade for hearts to recover their lost health.</div>
+      </div>
 
-                    <div class="feature-card">
-                        <div class="feature-icon">💰</div>
-                        <h3 class="feature-title">Economy System</h3>
-                        <p class="feature-desc">A fully balanced economy with multiple earning methods and fair trading!</p>
-                    </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚔️</span>
+        <h3>PvP Main</h3>
+        <p class="short-desc">Pure player-vs-player combat. Skill, gear, and strategy decide who lives.</p>
+        <button class="more-btn" onclick="toggleExpand(this)">More Info <span class="arrow">›</span></button>
+        <div class="expanded-desc">PvP is the core combat mode of the server, focused entirely on player-versus-player fights. Players compete against each other using skill, gear, and strategy in a fully competitive environment. Your enemies are real players — and every fight has real consequences.</div>
+      </div>
 
-                    <div class="feature-card">
-                        <div class="feature-icon">⚔️</div>
-                        <h3 class="feature-title">PvP Combat</h3>
-                        <p class="feature-desc">Engage in thrilling battles with custom combat rules for fairness!</p>
-                    </div>
+      <div class="feature-card">
+        <span class="feature-icon">🛡️</span>
+        <h3>Active Staff</h3>
+        <p class="short-desc">A staff team that actually shows up — fair, fast, and community-focused.</p>
+        <button class="more-btn" onclick="toggleExpand(this)">More Info <span class="arrow">›</span></button>
+        <div class="expanded-desc">Our staff team is consistently active and ready to help, handle reports, and keep the server fair for everyone. The owner is also very active and personally involved with the community — ensuring that issues are resolved quickly and the server stays a healthy place to play.</div>
+      </div>
 
-                    <div class="feature-card">
-                        <div class="feature-icon">🛡️</div>
-                        <h3 class="feature-title">Active Moderation</h3>
-                        <p class="feature-desc">Our staff team is always ready to help and ensure everyone has fun!</p>
-                    </div>
-                </div>
-            </div>
+      <div class="feature-card">
+        <span class="feature-icon">💰</span>
+        <h3>Economy Based</h3>
+        <p class="short-desc">A player-driven economy built around farming, trading, and bamboo.</p>
+        <button class="more-btn" onclick="toggleExpand(this)">More Info <span class="arrow">›</span></button>
+        <div class="expanded-desc">The server runs on a full economy system using <span class="cmd">/shop</span> and <span class="cmd">/ah</span> to buy items, and <span class="cmd">/sell</span> or direct player trading to earn currency. The server revolves around farm building — and at the heart of it all is Bamboo, the primary economic resource.</div>
+      </div>
 
-            <!-- HOW TO JOIN SECTION -->
-            <div id="join" class="content-section">
-                <h1 class="section-title">How to Join</h1>
-                <p class="section-subtitle">Follow these simple steps to start your NightFallSMP adventure!</p>
+      <div class="feature-card" style="grid-column: 1 / -1;">
+        <span class="feature-icon">🆓</span>
+        <h3>Free To Play</h3>
+        <p class="short-desc">Zero pay-to-win. No store. No advantages for spending real money. Ever.</p>
+        <button class="more-btn" onclick="toggleExpand(this)">More Info <span class="arrow">›</span></button>
+        <div class="expanded-desc">The server is purely free to play. There is no item, rank, or advantage that can be purchased with real-life money. We ensure the server is fair, safe, and accessible for anyone and everyone — no matter your budget. Win through skill and dedication alone.</div>
+      </div>
 
-                <div class="steps-container">
-                    <div class="step-card">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <h3>Launch Minecraft</h3>
-                            <p>Open your Minecraft launcher and make sure you're running Java Edition. NightFallSMP requires Minecraft Java Edition version 1.20 or later. We recommend using the latest stable release for the best experience.</p>
-                        </div>
-                    </div>
+    </div>
+  </div>
 
-                    <div class="step-card">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <h3>Add Server</h3>
-                            <p>Go to "Multiplayer" and click "Add Server". Enter "NightFallSMP" as the server name and paste <strong style="color: var(--glow-cyan);">NightFallSMP.valk.rocks</strong> as the server address. Click "Done" to save the server.</p>
-                        </div>
-                    </div>
+  <!-- RULES -->
+  <div id="page-rules" class="page">
+    <div class="page-title"><span>Server</span> Rules</div>
+    <div class="page-subtitle">Read carefully — ignorance of the rules is not an excuse.</div>
+    <div style="margin-top:-24px;margin-bottom:32px;padding:12px 18px;background:rgba(240,192,64,0.07);border:1px solid rgba(240,192,64,0.2);border-radius:8px;font-size:0.92rem;color:var(--gold);font-style:italic;">⚠️ By playing on the server you agree to follow the rules.</div>
 
-                    <div class="step-card">
-                        <div class="step-number">3</div>
-                        <div class="step-content">
-                            <h3>Join Discord</h3>
-                            <p>Before you start playing, we highly recommend joining our Discord server at <a href="https://discord.gg/yUzRtwt2sV" target="_blank" style="color: var(--glow-cyan);">discord.gg/yUzRtwt2sV</a>. This is where you can get help from staff, trade with players, stay updated on server events, and become part of our community!</p>
-                        </div>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">4</div>
-                        <div class="step-content">
-                            <h3>Read the Rules</h3>
-                            <p>Take a few minutes to review our Minecraft and Chat rules (available in the sidebar). Understanding these rules ensures you have a great experience and helps keep our community safe and fun for everyone. Breaking rules can result in warnings, kicks, or bans.</p>
-                        </div>
-                    </div>
-
-                    <div class="step-card">
-                        <div class="step-number">5</div>
-                        <div class="step-content">
-                            <h3>Start Playing!</h3>
-                            <p>Double-click the NightFallSMP server in your server list to join. You'll spawn at our protected spawn area where you can read more information, visit shops, and prepare for your adventure. Good luck, and may your hearts be plentiful!</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FEATURES SECTION -->
-            <div id="features" class="content-section">
-                <h1 class="section-title">Server Features</h1>
-                <p class="section-subtitle">Discover what makes NightFallSMP unique and exciting!</p>
-
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">💀</div>
-                        <h3 class="feature-title">Lifesteal System</h3>
-                        <p class="feature-desc">The core mechanic of our server - every kill steals hearts from your opponent!</p>
-                        <div class="feature-details">
-                            <strong>How it works:</strong>
-                            <ul>
-                                <li>When you kill another player, you steal one of their hearts permanently</li>
-                                <li>When you die, you lose one heart to your killer</li>
-                                <li>If you run out of hearts, you're temporarily banned until you can get more</li>
-                                <li>Hearts can be traded, bought, or earned through gameplay</li>
-                                <li>Strategic combat is rewarded - choose your battles wisely!</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">💰</div>
-                        <h3 class="feature-title">Balanced Economy</h3>
-                        <p class="feature-desc">A carefully managed economy system that prevents inflation and ensures fairness.</p>
-                        <div class="feature-details">
-                            <strong>Economy Features:</strong>
-                            <ul>
-                                <li>Shop prices are regularly adjusted to maintain balance</li>
-                                <li>Multiple ways to earn money: mining, trading, farming, and PvP rewards</li>
-                                <li>Player-to-player trading and auction house</li>
-                                <li>No pay-to-win mechanics - skill determines success</li>
-                                <li>Staff actively monitor for exploitation and adjust rates</li>
-                                <li>Economy resets are only done if absolutely necessary for server health</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">⚔️</div>
-                        <h3 class="feature-title">Fair PvP Combat</h3>
-                        <p class="feature-desc">Balanced combat rules ensure everyone has a fair chance in battle.</p>
-                        <div class="feature-details">
-                            <strong>Combat Features:</strong>
-                            <ul>
-                                <li>Custom combat rules prevent overpowered strategies</li>
-                                <li>No use of game-breaking items like Crystals or Respawn Anchors</li>
-                                <li>Elytra cannot be used during or before combat to prevent unfair escapes</li>
-                                <li>Arena combat zones for controlled PvP matches</li>
-                                <li>Anti-cheat systems to detect unfair advantages</li>
-                                <li>Staff review combat reports to ensure fairness</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">🛡️</div>
-                        <h3 class="feature-title">Active Staff Team</h3>
-                        <p class="feature-desc">Our dedicated moderators are here to help and ensure a positive experience.</p>
-                        <div class="feature-details">
-                            <strong>Staff Support:</strong>
-                            <ul>
-                                <li>Multiple staff members online during peak hours</li>
-                                <li>Quick response times to tickets and reports</li>
-                                <li>Fair and consistent rule enforcement</li>
-                                <li>Help with technical issues and gameplay questions</li>
-                                <li>Regular events and community engagement</li>
-                                <li>Staff are trained to handle all situations professionally</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">🏪</div>
-                        <h3 class="feature-title">Server Shops & Trading</h3>
-                        <p class="feature-desc">Buy, sell, and trade items with other players in our marketplace!</p>
-                        <div class="feature-details">
-                            <strong>Trading System:</strong>
-                            <ul>
-                                <li>Admin shop for basic items at fair prices</li>
-                                <li>Player shops where you can sell your goods</li>
-                                <li>Auction house for rare and valuable items</li>
-                                <li>Safe trading system prevents scamming</li>
-                                <li>Price history tracking for transparency</li>
-                                <li>Special deals and sales during events</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="feature-card">
-                        <div class="feature-icon">🎯</div>
-                        <h3 class="feature-title">Regular Events</h3>
-                        <p class="feature-desc">Participate in exciting server-wide events for rewards and glory!</p>
-                        <div class="feature-details">
-                            <strong>Event Types:</strong>
-                            <ul>
-                                <li>Weekly PvP tournaments with prizes</li>
-                                <li>Building competitions with community voting</li>
-                                <li>Treasure hunts with hidden rewards</li>
-                                <li>Boss battles for rare loot</li>
-                                <li>Seasonal events during holidays</li>
-                                <li>Double rewards weekends</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MINECRAFT RULES SECTION -->
-            <div id="minecraft-rules" class="content-section">
-                <h1 class="section-title">📜 Minecraft Rules</h1>
-                <p class="section-subtitle">Click on any rule to see a detailed explanation. Breaking these rules will result in punishments.</p>
-
-                <div class="rules-grid">
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">1. No cheats of any kind (texture packs, mods, clients, etc.)</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            This means absolutely NO use of hacked clients, X-ray texture packs, modified game files, or any third-party software that gives you an unfair advantage. This includes but is not limited to: killaura, fly hacks, speed hacks, auto-clickers set above human speeds, ESP, tracers, or any mod that shows you information you shouldn't normally have access to. Allowed mods include Optifine, shaders, minimaps (without player/entity radar), and performance mods. When in doubt, ask staff before using any mod.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">2. No overpowered or illegal items (no Elytra+Mace during fights, no Crystals or Anchors)</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            End Crystals and Respawn Anchors are completely banned from PvP as they cause massive, unavoidable damage. The Mace weapon combined with Elytra creates an overpowered one-shot strategy that is not allowed during combat. Elytra itself cannot be worn or used during any PvP engagement. Any items obtained through duplication glitches or other exploits are considered illegal and must be reported to staff immediately.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">3. No exploiting glitches</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            If you discover a bug or glitch in Minecraft or our server plugins, you must report it to staff immediately - do not use it for personal gain. This includes duplication glitches, X-ray glitches, item duping, infinite money exploits, or any other unintended game behavior. Using glitches to gain advantages results in severe punishment including permanent bans. Players who report major glitches may receive rewards!
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">4. Follow staff orders</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            When a staff member asks you to do (or stop doing) something, you must comply. This includes requests to come to a specific location for questioning, to stop certain behaviors, or to provide information. If you believe a staff member's order is unfair or incorrect, comply first and then report the issue to a higher-ranking staff member or server owner through Discord. Arguing with or ignoring staff will result in additional punishment.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">5. No lag machines</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Creating devices or contraptions specifically designed to cause server lag is strictly prohibited. This includes excessive redstone clocks, massive entity farms, piston loops, or any builds that intentionally strain server performance. Even unintentional lag machines must be removed when discovered. Keep your farms reasonable in size and use proper chunk loading practices. Staff may ask you to reduce or remove builds that impact server performance.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">6. No cross-trading or real-world trading</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            You cannot trade in-game items, currency, or services for real money, items from other games/servers, or any other form of real-world value. This includes selling Minecraft accounts with server items, trading hearts for Discord Nitro, or any arrangement where real money or external value is exchanged for server resources. Buying/selling services (like building or grinding) for in-game currency only is allowed. Cross-server trading is also forbidden.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">7. No alt abuse</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Using alternate Minecraft accounts to gain unfair advantages is forbidden. This includes: using alts to farm kills/hearts, circumvent death bans, hold extra inventory space, claim additional land, generate extra resources, or avoid punishments. You may have one alt account for legitimate purposes (like checking if you're online when you're AFK), but it cannot be used to give yourself any gameplay advantage. All accounts owned by you must be declared to staff.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">8. No X-ray or ore-finding of any kind (mods, packs, clients, etc.)</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            This rule specifically addresses tools that help you locate ores, spawners, or valuable blocks underground. X-ray texture packs, X-ray mods, cave finder tools, and any client modifications that reveal hidden blocks are completely banned. This also includes using external tools or seed readers to locate structures or resources. Mining must be done legitimately - staff have tools to detect suspicious mining patterns and will investigate unusual ore discovery rates.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">9. No using Elytra before or during combat</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Once you engage in combat or are attacked by another player, you cannot equip or use Elytra for the entire duration of that combat encounter (including the combat timer). You also cannot wear Elytra as you initiate combat with someone. This prevents unfair escapes and keeps fights balanced. If you're wearing Elytra when unexpectedly attacked, you must remove it before fighting back. Using Elytra to flee from combat is considered combat logging.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">10. No debuffs in combat (unless used to counter Mace)</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Using potions or effects that apply negative debuffs to your opponent (weakness, slowness, poison, etc.) is not allowed during PvP combat. The only exception is if your opponent is using a Mace weapon, in which case debuffs are permitted as a defensive counter-measure. This rule keeps combat skill-based rather than potion-spam based. Harming potions and damage-dealing effects are still allowed.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">11. No ruining spawn of any kind</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            The spawn area is protected and meant to be a safe, welcoming place for all players. Do not place blocks, break blocks, litter, create ugly structures, spam items, or do anything that damages the appearance or functionality of spawn. This includes pranks, "art," or any modifications without explicit staff permission. Violations result in immediate bans as spawn represents our server to new players.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">12. No threatening to ruin the spawn/server</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Making threats to grief spawn, crash the server, or perform any destructive action against the server infrastructure is taken extremely seriously. This includes "joking" threats, vague threats, or threats made out of frustration. Even if you have no actual ability or intention to carry out the threat, making it is grounds for an immediate permanent ban. We have zero tolerance for threats against the server.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">13. No using bots, AI, or macros to farm</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Automated farming using bots, scripts, macro programs, or AI is forbidden. All resource gathering, combat, and gameplay must be performed manually by a human player. This includes autoclickers for farming, auto-fish macros, auto-mining bots, or any automated tool that plays the game for you while you're AFK. Simple keybind rebinding is okay, but any automation that performs repeated actions is not allowed.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">14. No using the server for personal gain</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            The server is for playing Minecraft, not for advertising your social media, promoting your content, recruiting for other servers, or any other form of personal promotion. You cannot use the server's player base or Discord community to promote your YouTube channel, Twitch stream, or other projects without explicit staff permission. Asking people to follow/subscribe/donate in chat is not allowed.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">15. No stashing illegal items (hiding them from staff/members)</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            If you come into possession of illegal items (duped items, glitched items, items that shouldn't exist, etc.), you must report them to staff immediately - you cannot hide them or keep them "for later." Burying chests of illegal items, storing them in secret locations, or attempting to hide them in any way is considered just as bad as creating them yourself. This rule exists because hiding illegal items disrupts the economy and creates unfair advantages.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">16. No pushing players outside of arena</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            During organized PvP matches in designated arenas, you cannot use knockback, fishing rods, or any other method to push opponents outside the arena boundaries. Fights must stay within the designated combat zone. This rule ensures fair arena matches where the better fighter wins, not whoever can push someone into a pit first. Breaking this rule results in the match forfeit and potential ban from future events.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">17. No encouraging players to break a rule</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Telling other players to break rules, teaching them how to break rules, or encouraging rule-breaking behavior makes you equally guilty. This includes "joking" about breaking rules, linking to hacked clients, explaining how to exploit glitches, or helping someone evade punishment. If you know someone is breaking rules, report them to staff - don't join them or help them. Facilitating rule-breaking results in the same punishment as breaking the rule yourself.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">18. Report players when caught breaking rules</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            If you witness someone breaking server rules, you should report them to staff through Discord tickets or by messaging an online staff member. Include evidence like screenshots, video, or detailed descriptions of what happened. False reports are punished, but genuine reports help keep the community safe. You can report anonymously if you prefer. Players who consistently report rule-breakers and help staff may receive recognition or rewards.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">19. No bed camping (camping a player's bed to farm them for hearts/kills)</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Sitting at someone's respawn bed and repeatedly killing them as they spawn is considered harassment and unfair farming. While killing someone at their bed once or twice during a raid is acceptable, repeatedly spawn-killing them to farm hearts is forbidden. This creates a frustrating experience where the victim has no chance to defend themselves. If you kill someone at their bed, move on - don't camp it. Repeated bed camping results in heart penalties and bans.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">20. No staff impersonation</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Pretending to be a staff member, using a similar name to staff, claiming to have staff powers, or in any way making other players believe you are part of the staff team is strictly forbidden. This includes "joking" claims of being staff, using color codes in your name to look like staff, or claiming you have mod/admin privileges. Impersonation confuses players and can be used to scam or manipulate others. This results in immediate permanent bans.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">21. No ban evasion</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            If you are banned from the server, you cannot use alternate accounts, VPNs, or any other method to bypass the ban and continue playing. This includes both temporary and permanent bans. Ban evasion results in all your accounts being permanently banned and IP banned. If you believe your ban was unfair, appeal it through proper channels on our Discord - don't attempt to evade it. Death bans (from losing all hearts) must be waited out or appealed legitimately.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">22. No naked killing</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Attacking or killing players who have no armor or weapons equipped is considered unfair and unsportsmanlike. If you see someone clearly unprepared for combat (naked or in very basic gear), give them a chance to gear up or make it clear you want to fight. Repeatedly targeting defenseless players for easy kills/hearts is harassment. Exceptions include if the naked player attacks you first or enters a designated PvP zone. This rule promotes fair, skill-based combat.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">23. Use common sense</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Not every possible bad behavior can be explicitly listed in the rules. Use your best judgment - if something seems like it would be unfair, harmful to the community, or exploitative, don't do it. This includes finding loopholes in rules, doing things that are "technically" allowed but clearly against the spirit of fair play, or arguing that something is okay because it's not specifically listed. Staff have final say on what constitutes rule-breaking behavior. When in doubt, ask staff first!
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CHAT RULES SECTION -->
-            <div id="chat-rules" class="content-section">
-                <h1 class="section-title">💬 Chat Rules</h1>
-                <p class="section-subtitle">Click on any rule to see a detailed explanation. These rules apply to both in-game chat and Discord.</p>
-
-                <div class="rules-grid">
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">1. No spamming or flooding</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Sending the same message repeatedly, sending many messages in rapid succession, or posting nonsensical spam clutters chat and makes it hard for others to communicate. This includes repeating characters (AAAAAAA), sending multiple messages that could be combined into one, or copy-pasting the same text over and over. Occasional double messages are okay, but continuous flooding is not. Spam bots result in immediate permanent bans.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">2. No mass pinging (members or staff)</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            On Discord, do not tag @everyone, @here, or ping multiple staff members/players without a legitimate reason. Mass pinging disrupts everyone's notifications and is annoying. If you need staff help, ping the @Staff role once or use the ticket system - don't ping individual staff members repeatedly. Pinging many regular members for no reason is also not allowed. Only ping people when necessary and relevant to them.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">3. No advertising or promotion</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Do not advertise other Minecraft servers, Discord servers, social media pages, YouTube channels, or any external content/services in our chat or Discord. This includes subtle promotion like "just started a new server, dm me for ip" or posting links to your content. Asking others to visit, join, or check out your stuff is advertising. The only exception is if staff explicitly gives you permission for a specific collaboration or event.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">4. No chat colors</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Using color codes, formatting codes, or special characters to make your messages colored or formatted is reserved for staff announcements and important messages. Regular players should not use &-codes, Unicode characters for effects, or any method to make their messages stand out with colors or formatting. This keeps chat clean and ensures staff messages are easily identifiable. Ranks may have default colors, which are allowed.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">5. No NSFW content/context of any kind</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            This is a family-friendly server. Absolutely no sexual content, pornographic material, extremely violent/gory content, or anything inappropriate for younger audiences. This includes NSFW images, links, references, jokes, role-play, or discussions. Even "mild" inappropriate content is not allowed. ASCII art of inappropriate nature is banned. Skins with NSFW elements must be changed. This rule is strictly enforced with no warnings - violations result in immediate permanent bans.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">6. No harassing others</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Harassment includes repeatedly bothering someone after they've asked you to stop, targeting specific players with insults or mockery, following them around to annoy them, or any behavior intended to make someone uncomfortable or upset. This includes in-game harassment (like repeatedly killing someone unfairly) and chat harassment. Friendly banter is okay, but if someone says "stop" or asks you to leave them alone, you must respect that. Continued harassment results in mutes and bans.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">7. No racism, discrimination, or hate speech</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Any form of discrimination based on race, ethnicity, religion, gender, sexual orientation, disability, or any other personal characteristic is absolutely forbidden. This includes slurs, stereotypes, "jokes," hate symbols, or any hateful language/content. We have zero tolerance for bigotry. Even if you claim you're "just joking" or "didn't mean it that way," hate speech results in immediate permanent bans. Our community is welcoming to everyone, and hate has no place here.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">8. No threats or encouraging real-life harm</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Making threats of violence, self-harm, or harm to others is taken extremely seriously - even as a joke. This includes threats against specific individuals, vague threats, or "edgy" jokes about violence. Encouraging someone to harm themselves or others is equally serious. We report credible threats to authorities. Mental health is important - if you're struggling, reach out for help, don't make threats. If you see someone making threats or expressing suicidal thoughts, report to staff immediately so we can help.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">9. No sharing personal information</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Do not share your own or others' personal information in chat. This includes real names, addresses, phone numbers, school names, exact locations, social media accounts (unless publicly professional), or any identifying information. Sharing someone else's personal info (doxxing) results in immediate permanent bans and may be reported to authorities. Even sharing your own info is not allowed as it puts you at risk. Keep conversations about Minecraft and the server - your privacy matters.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">10. No blackmail or impersonation of staff</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Attempting to blackmail or extort other players (threatening to expose information, threatening to get them banned unless they pay you, etc.) is completely forbidden. Impersonating staff members to gain trust, scam players, or manipulate situations is equally serious. This includes using similar names, copying staff formats, or claiming to have staff authority. Both blackmail and staff impersonation result in immediate permanent bans as they severely violate trust and safety.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">11. No spreading rumors or false accusations that could hurt a staff member's reputation</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Making false claims about staff members (claiming they abuse power, stole items, play favorites, etc.) damages their reputation and undermines server trust. If you have a legitimate complaint about a staff member's behavior, report it privately to senior staff or the owner with evidence - don't spread it in public chat. Baseless accusations or deliberately false rumors about staff are taken very seriously. However, legitimate concerns with evidence presented properly are always investigated fairly.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">12. No false reports</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Making deliberately false reports against other players wastes staff time and can get innocent players punished. If you're unsure whether something is rule-breaking, ask staff first before reporting. However, making a good-faith report that turns out to be mistaken is not punished - we only punish intentionally false reports. Filing multiple false reports or making reports to harass specific players results in mutes and potential bans. Report systems exist to keep the community safe, not as a weapon against players you don't like.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">13. No false tickets (opening tickets without solid reasons)</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            The Discord ticket system is for legitimate support requests, reports, appeals, and server issues - not for trolling, casual conversation, or minor complaints that belong in general chat. Opening many unnecessary tickets, opening tickets as pranks, or spamming the ticket system results in ticket access being revoked and potential mutes. Before opening a ticket, make sure you have a genuine issue that requires private staff attention. Questions like "when is next event" belong in chat, not tickets.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">14. No exploiting rule loopholes</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Finding technical loopholes in the rules and arguing "this isn't specifically banned so it's allowed" goes against the spirit of the rules. If something seems unfair, disruptive, or wrong but isn't explicitly listed, don't do it and claim it's okay. Staff interpret rules based on intent and community wellbeing, not just literal wording. Attempting to "rules lawyer" or find loopholes results in punishment for the behavior plus additional punishment for trying to abuse the system. Rule 23 (use common sense) covers these situations.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">15. Follow staff instructions</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            When staff members ask you to stop doing something, change your behavior, or take a specific action, you must comply. This includes being told to stop certain conversations, to take discussions to DMs, to change topics, or to calm down. Arguing with staff, ignoring their instructions, or continuing banned behavior after being told to stop results in escalating punishments. If you disagree with a staff decision, comply first and then appeal through proper channels - don't argue in public chat.
-                        </div>
-                    </div>
-
-                    <div class="rule-card" onclick="toggleRule(this)">
-                        <div class="rule-header">
-                            <div class="rule-title">16. Use common sense</div>
-                            <div class="rule-expand">▼</div>
-                        </div>
-                        <div class="rule-explanation">
-                            Chat rules can't cover every possible situation. If something seems like it would annoy people, disrupt conversations, or make the community worse, don't do it - even if it's not explicitly banned. This includes edge cases, unusual scenarios, and new forms of trolling we haven't encountered before. Ask yourself: "Is this making the chat better or worse?" If worse, don't do it. Staff use discretion to handle situations not covered by specific rules. Be respectful, considerate, and positive - that's the core principle behind all chat rules.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="rules-section">
+      <h3>⚔️ Minecraft Rules</h3>
+      <div class="rule-item"><span class="rule-num">#1</span><span class="rule-text">No cheats of any kind (texture packs, mods, clients, etc.).</span></div>
+      <div class="rule-item"><span class="rule-num">#2</span><span class="rule-text">No overpowered or illegal items. <span class="rule-tag">e.g. Elytra + Mace</span></span></div>
+      <div class="rule-item"><span class="rule-num">#3</span><span class="rule-text">No exploiting glitches.</span></div>
+      <div class="rule-item"><span class="rule-num">#4</span><span class="rule-text">Follow staff orders.</span></div>
+      <div class="rule-item"><span class="rule-num">#5</span><span class="rule-text">No lag machines.</span></div>
+      <div class="rule-item"><span class="rule-num">#6</span><span class="rule-text">No cross-trading or real-world trading.</span></div>
+      <div class="rule-item"><span class="rule-num">#7</span><span class="rule-text">No alt abuse.</span></div>
+      <div class="rule-item"><span class="rule-num">#8</span><span class="rule-text">No X-ray or ore-finding of any kind (mods, packs, clients, etc.).</span></div>
+      <div class="rule-item"><span class="rule-num">#9</span><span class="rule-text">No using Elytra before or during combat.</span></div>
+      <div class="rule-item"><span class="rule-num">#10</span><span class="rule-text">No debuffs in combat (unless used to counter the Mace).</span></div>
+      <div class="rule-item"><span class="rule-num">#11</span><span class="rule-text">No ruining spawn of any kind.</span></div>
+      <div class="rule-item"><span class="rule-num">#12</span><span class="rule-text">No threatening to ruin the spawn or server.</span></div>
+      <div class="rule-item"><span class="rule-num">#13</span><span class="rule-text">No using bots, AI, or macros to farm.</span></div>
+      <div class="rule-item"><span class="rule-num">#14</span><span class="rule-text">No using the server for personal gain.</span></div>
+      <div class="rule-item"><span class="rule-num">#15</span><span class="rule-text">No stashing illegal items (hiding them from staff or members).</span></div>
+      <div class="rule-item"><span class="rule-num">#16</span><span class="rule-text">No pushing players outside of the arena.</span></div>
+      <div class="rule-item"><span class="rule-num">#17</span><span class="rule-text">No encouraging players to break a rule.</span></div>
+      <div class="rule-item"><span class="rule-num">#18</span><span class="rule-text">Report players when caught breaking rules.</span></div>
+      <div class="rule-item"><span class="rule-num">#19</span><span class="rule-text">No bed camping (camping a player's bed to farm them for hearts/kills).</span></div>
+      <div class="rule-item"><span class="rule-num">#20</span><span class="rule-text">No staff impersonation.</span></div>
+      <div class="rule-item"><span class="rule-num">#21</span><span class="rule-text">No ban evasion.</span></div>
+      <div class="rule-item"><span class="rule-num">#22</span><span class="rule-text">No naked killing.</span></div>
+      <div class="rule-item"><span class="rule-num">#23</span><span class="rule-text">Use common sense.</span></div>
+      <div class="glow-line"></div>
+      <div class="rule-item"><span class="rule-num" style="color:var(--accent2)">⚠</span><span class="rule-text">No Anchors. <span class="rule-tag">Banned Item</span></span></div>
+      <div class="rule-item"><span class="rule-num" style="color:var(--accent2)">⚠</span><span class="rule-text">No Crystals. <span class="rule-tag">Banned Item</span></span></div>
     </div>
 
-    <script>
-        // Generate stars
-        function createStars() {
-            const starfield = document.getElementById('starfield');
-            for (let i = 0; i < 100; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.width = Math.random() * 3 + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 3 + 's';
-                starfield.appendChild(star);
-            }
+    <div class="rules-section">
+      <h3>💬 Chat Rules</h3>
+      <div class="rule-item"><span class="rule-num">#1</span><span class="rule-text">No spamming or flooding.</span></div>
+      <div class="rule-item"><span class="rule-num">#2</span><span class="rule-text">No mass pinging (members or staff).</span></div>
+      <div class="rule-item"><span class="rule-num">#3</span><span class="rule-text">No advertising or promotion.</span></div>
+      <div class="rule-item"><span class="rule-num">#4</span><span class="rule-text">No chat colors.</span></div>
+      <div class="rule-item"><span class="rule-num">#5</span><span class="rule-text">No NSFW content or context of any kind.</span></div>
+      <div class="rule-item"><span class="rule-num">#6</span><span class="rule-text">No harassing others.</span></div>
+      <div class="rule-item"><span class="rule-num">#7</span><span class="rule-text">No racism, discrimination, or hate speech.</span></div>
+      <div class="rule-item"><span class="rule-num">#8</span><span class="rule-text">No threats or encouraging real-life harm.</span></div>
+      <div class="rule-item"><span class="rule-num">#9</span><span class="rule-text">No sharing personal information.</span></div>
+      <div class="rule-item"><span class="rule-num">#10</span><span class="rule-text">No blackmail or impersonation of staff.</span></div>
+      <div class="rule-item"><span class="rule-num">#11</span><span class="rule-text">No spreading rumors or false accusations that could hurt a staff member's reputation.</span></div>
+      <div class="rule-item"><span class="rule-num">#12</span><span class="rule-text">No false reports.</span></div>
+      <div class="rule-item"><span class="rule-num">#13</span><span class="rule-text">No false tickets (opening tickets without solid reasons).</span></div>
+      <div class="rule-item"><span class="rule-num">#14</span><span class="rule-text">No exploiting rule loopholes.</span></div>
+      <div class="rule-item"><span class="rule-num">#15</span><span class="rule-text">Follow staff instructions.</span></div>
+      <div class="rule-item"><span class="rule-num">#16</span><span class="rule-text">Use common sense.</span></div>
+    </div>
+  </div>
 
-            // Create shooting stars
-            for (let i = 0; i < 3; i++) {
-                const shootingStar = document.createElement('div');
-                shootingStar.className = 'shooting-star';
-                shootingStar.style.left = Math.random() * 50 + '%';
-                shootingStar.style.top = Math.random() * 50 + '%';
-                shootingStar.style.animationDelay = Math.random() * 5 + 's';
-                starfield.appendChild(shootingStar);
-            }
-        }
+  <!-- HOW TO JOIN -->
+  <div id="page-join" class="page">
+    <div class="page-title">How To <span>Join</span></div>
+    <div class="page-subtitle">Follow these steps to get into NightFall SMP in under a minute.</div>
+    <div class="steps-container">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content"><p>Open Minecraft and click <code>Multiplayer</code> on the main menu.</p></div>
+      </div>
+      <div class="connector"></div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content"><p>Click <code>Add Server</code> in the bottom right corner of the server list.</p></div>
+      </div>
+      <div class="connector"></div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content"><p>In the <code>Server Address</code> field, type: <strong style="color:var(--accent);font-family:'Cinzel',serif">NightFallSMP.2bd.net</strong> <button onclick="copyIPJoin()" class="copy-ip-btn" id="copyJoinBtn">📋 Click To Copy IP</button></p></div>
+      </div>
+      <div class="connector"></div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content"><p>Click <code>Done</code> to save the server to your list.</p></div>
+      </div>
+      <div class="connector"></div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-content"><p>Select the server and click <code>Join Server</code> in the bottom left. You're in! 🎉</p></div>
+      </div>
+      <div class="join-note">
+        <strong>⚠ Having trouble?</strong> Make sure you're on a compatible Java Edition version. Join our <a href="https://discord.gg/sE9gb4vb6S" target="_blank" style="color:var(--accent)">Discord</a> for support from our active staff team.
+      </div>
+    </div>
+  </div>
 
-        createStars();
+</main>
 
-        // Navigation
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Add active class to clicked nav item
-            event.currentTarget.classList.add('active');
-            
-            // Scroll to top
-            document.querySelector('.main-content').scrollTop = 0;
-        }
+<div class="toast" id="toast">✓ IP Copied!</div>
 
-        // Copy IP to clipboard
-        function copyIP() {
-            navigator.clipboard.writeText('NightFallSMP.valk.rocks').then(() => {
-                const ipElement = document.querySelector('.server-ip');
-                const originalText = ipElement.textContent;
-                ipElement.textContent = '✓ Copied to clipboard!';
-                ipElement.style.color = 'var(--glow-purple)';
-                setTimeout(() => {
-                    ipElement.textContent = originalText;
-                    ipElement.style.color = 'var(--glow-cyan)';
-                }, 2000);
-            });
-        }
+<script>
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
 
-        // Toggle rule explanation
-        function toggleRule(element) {
-            element.classList.toggle('expanded');
-        }
-    </script>
+  function toggleExpand(btn) {
+    btn.classList.toggle('open');
+    const desc = btn.nextElementSibling;
+    desc.classList.toggle('open');
+  }
+
+  function copyToClipboard(text) {
+    try {
+      const el = document.createElement('input');
+      el.value = text;
+      el.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+      document.body.appendChild(el);
+      el.focus();
+      el.select();
+      el.setSelectionRange(0, 99999);
+      const success = document.execCommand('copy');
+      document.body.removeChild(el);
+      return success;
+    } catch(e) {
+      return false;
+    }
+  }
+
+  function copyIPJoin() {
+    const success = copyToClipboard('nightfallsmp.2bd.net');
+    const btn = document.getElementById('copyJoinBtn');
+    if (success) {
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+    } else {
+      btn.textContent = '📋 nightfallsmp.2bd.net';
+      btn.classList.add('copied');
+    }
+    setTimeout(() => {
+      btn.textContent = '📋 Click To Copy IP';
+      btn.classList.remove('copied');
+    }, 2500);
+  }
+
+  function copyIP() {
+    const success = copyToClipboard('nightfallsmp.2bd.net');
+    const hint = document.querySelector('.copy-hint');
+    const ipBox = document.querySelector('.ip-box');
+
+    // Remove existing badge if any
+    const existing = document.getElementById('copied-badge');
+    if (existing) existing.remove();
+
+    if (success) {
+      const badge = document.createElement('span');
+      badge.id = 'copied-badge';
+      badge.textContent = '✓ Copied!';
+      badge.style.cssText = 'position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);white-space:nowrap;padding:4px 12px;background:#1a7a3a;color:#7fffb0;border:1px solid #7fffb0;border-radius:20px;font-size:0.65rem;font-family:Cinzel,serif;letter-spacing:0.1em;pointer-events:none;';
+      ipBox.style.position = 'relative';
+      ipBox.appendChild(badge);
+      setTimeout(() => { if (badge) badge.remove(); }, 2500);
+    } else {
+      hint.textContent = 'nightfallsmp.2bd.net';
+      hint.style.color = 'var(--accent)';
+      setTimeout(() => {
+        hint.textContent = 'Click to copy';
+        hint.style.color = '';
+      }, 2500);
+    }
+  }
+</script>
 </body>
 </html>
